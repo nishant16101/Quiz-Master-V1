@@ -1,0 +1,140 @@
+/* style.css */
+
+/* General styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    margin-top: 20px;
+}
+
+/* Navigation bar */
+.navbar {
+    background-color: #3498db;
+}
+
+.navbar-brand, .nav-link {
+    color: #ffffff !important;
+}
+
+.nav-link:hover {
+    color: #e0e0e0 !important;
+}
+
+/* Jumbotron */
+.jumbotron {
+    background-color: #ecf0f1;
+    padding: 2rem;
+    border-radius: 0.3rem;
+    margin-bottom: 2rem;
+}
+
+/* Cards */
+.card {
+    margin-bottom: 20px;
+    border: 1px solid #e0e0e0;
+    border-radius: 0.25rem;
+}
+
+.card-header {
+    background-color: #3498db;
+    color: #ffffff;
+}
+
+/* Tables */
+.table {
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+}
+
+.table thead th {
+    background-color: #3498db;
+    color: #ffffff;
+    border-bottom: 2px solid #2980b9;
+}
+
+/* Buttons */
+.btn-primary {
+    background-color: #3498db;
+    border-color: #3498db;
+}
+
+.btn-primary:hover {
+    background-color: #2980b9;
+    border-color: #2980b9;
+}
+
+.btn-danger {
+    background-color: #e74c3c;
+    border-color: #e74c3c;
+}
+
+.btn-danger:hover {
+    background-color: #c0392b;
+    border-color: #c0392b;
+}
+
+/* Forms */
+.form-control {
+    border: 1px solid #bdc3c7;
+    border-radius: 0.25rem;
+}
+
+.form-control:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+}
+
+/* Footer */
+footer {
+    background-color: #34495e;
+    color: #ffffff;
+    text-align: center;
+    padding: 1rem 0;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+/* Quiz attempt page */
+.question-card {
+    margin-bottom: 20px;
+}
+
+.question-text {
+    font-weight: bold;
+}
+
+/* Dashboard */
+.dashboard-card {
+    transition: transform 0.3s;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-5px);
+}
+
+/* Admin management pages */
+.management-table th {
+    background-color: #3498db;
+    color: #ffffff;
+}
+
+.management-table td {
+    vertical-align: middle;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .jumbotron {
+        padding: 1rem;
+    }
+    
+    .container {
+        margin-top: 10px;
+    }
+}

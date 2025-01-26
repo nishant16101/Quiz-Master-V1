@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Quiz Result{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            <h3>Quiz Result: {{ quiz.title }}</h3>
+        </div>
+        <div class="card-body">
+            <div class="result-summary mb-4">
+                <h4>Score: {{ score }}/{{ total_questions }}</h4>
+                <p>Percentage: {{ (score/total_questions * 100)|round(2) }}%</p>
+                <p>Time taken: {{ time_taken }} minutes</p>
+            </div>
+            
+            <div class="question-review">
+                <h4>Question Review</h4>
+                {% for question in questions %}
+                <div class="question-card mb-4 p-3 border rounded">
+                    <p class="question-text">{{ loop.index }}. {{ question.content }}</p>
+                    <div class="options">
+                        <p class="{% if question.correct_answer == 'A' %}text-success{% endif %}">A: {{ question.option_a }}</p>
+                        <p class="{% if question.correct_answer == 'B' %}text-success{% endif %}">B: {{ question.option_b }}</p>
+                        <p class="{% if question.correct_answer == 'C' %}text-success{% endif %}">C: {{ question.option_c }}</p>
+                        <p class="{% if question.correct_answer == 'D' %}text-success{% endif %}">D: {{ question.option_d }}</p>
+                    </div>
+                    <p>Your answer: {{ user_answers[question.id] }}</p>
+                    <p>Correct answer: {{ question.correct_answer }}</p>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <a href="{{ url_for('user.dashboard') }}" class="btn btn-primary">Back to Dashboard</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
