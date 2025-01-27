@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
+
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2>Subject Management</h2>
     <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addSubjectModal">Add New Subject</button>
@@ -21,8 +22,11 @@
                     <td>{{ subject.name }}</td>
                     <td>{{ subject.description }}</td>
                     <td>
-                        <button class="btn btn-sm btn-primary">Edit</button>
-                        <button class="btn btn-sm btn-danger">Delete</button>
+                        <a href="{{ url_for('admin.delete_subject', subject_id=subject.id) }}" 
+                           class="btn btn-sm btn-danger"
+                           onclick="return confirm('Are you sure? This will delete all associated chapters and quizzes.')">
+                            Delete
+                        </a>
                     </td>
                 </tr>
                 {% endfor %}
