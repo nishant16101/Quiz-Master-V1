@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Quiz{% endblock %}
+
+{% block content %}
+    <div class="add-quiz">
+        <h2>Add New Quiz</h2>
+        <form action="/admin/add-quiz" method="POST">
+            <!-- Select Subject -->
+            <div class="form-group">
+                <label for="subject">Select Subject</label>
+                <select id="subject" name="subject_id" class="form-control" required onchange="updateChapters()">
+                    <option value="">--Select Subject--</option>
+                    {% for subject in subjects %}
+                        <option value="{{ subject.id }}">{{ subject.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Select Chapter (dynamically populated based on selected subject) -->
+            <div class="form-group">
+                <label for="chapter">Select Chapter</label>
+                <select id="chapter" name="chapter_id" class="form-control" required>
+                    <option value="">--Select Chapter--</option>
+                    <!-- Chapters will be populated dynamically with JavaScript -->
+                </select>
+            </div>
+
+            <!-- Quiz Name -->
+            <div class="form-group">
+                <label for="quiz-name">Quiz Name</label>
+                <input type="text" id="quiz-name" name="quiz_name" class="form-control" required>
+            </div>
+
+            <!-- Quiz Description -->
+            <div class="form-group">
+                <label for="quiz-description">Quiz Description</label>
+                <textarea id="quiz-description" name="quiz_description" class="form-control" rows="4" required></textarea>
+            </div>
+
+            <!-- Quiz Duration (HH:MM) -->
+            <div class="form-group">
+                <label for="quiz-duration">Quiz Duration (HH:MM)</label>
+                <input type="time" id="quiz-duration" name="quiz_duration" class="form-control" required>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="btn btn-primary">Add Quiz</button>
+        </form>
+
+        {% if quiz_added %}
+            <div class="mt-4">
+                <h3>Quiz Added Successfully</h3>
+                <a href="/admin/add-question/{{ quiz_id }}" class="btn btn-success">Add Questions to Quiz</a>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- JavaScript to update chapters based on selected subject -->
+    <script>
+        function updateChapters() {
+            var subjectId = document.getElementById("subject").value;
+            var chapterSelect = document.getElementById("chapter");
+
+            // Clear existing chapters
+            chapterSelect.innerHTML = '<option value="">--Select Chapter--</option>';
+
+            if (subjectId) {
+                // Fetch chapters for the selected subject (use AJAX or predefined data)
+                fetch(`/admin/get-chapters/${subjectId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.chapters.length > 0) {
+                            data.chapters.forEach(function(chapter) {
+                                var option = document.createElement("option");
+                                option.value = chapter.id;
+                                option.text = chapter.name;
+                                chapterSelect.appendChild(option);
+                            });
+                        }
+                    });
+            }
+        }
+    </script>
+{% endblock %}

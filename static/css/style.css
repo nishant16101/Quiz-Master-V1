@@ -1,0 +1,131 @@
+/* Custom Styles to Override Bootstrap Defaults */
+
+/* General Body Styling */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f7fa;
+    color: #333;
+}
+
+/* Header */
+header {
+    background-color: #3b7dd8;
+    color: #fff;
+    padding: 20px 0;
+    text-align: center;
+}
+
+header h1 {
+    font-size: 2.5em;
+    margin-bottom: 10px;
+}
+
+/* Navigation Bar */
+.navbar {
+    background-color: #333;
+}
+
+.navbar .navbar-nav .nav-link {
+    color: #fff !important;
+    font-size: 1.2em;
+    padding: 10px 15px;
+}
+
+.navbar .navbar-nav .nav-link:hover {
+    background-color: #575757;
+}
+
+/* Main Content Area */
+main {
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+main h2 {
+    font-size: 1.8em;
+    margin-bottom: 15px;
+}
+
+/* Admin and User Dashboards - Flex Layout */
+.dashboard .card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard .card h3 {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+}
+
+.dashboard .card p {
+    font-size: 1em;
+    color: #555;
+}
+
+/* Form Inputs */
+input[type="text"], input[type="email"], input[type="password"], select, textarea {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1em;
+}
+
+input[type="submit"], button {
+    background-color: #3b7dd8;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+}
+
+input[type="submit"]:hover, button:hover {
+    background-color: #2a5c9d;
+}
+
+/* Table Styling */
+table {
+    width: 100%;
+    margin: 20px 0;
+    border-collapse: collapse;
+}
+
+table, th, td {
+    border: 1px solid #ddd;
+}
+
+th, td {
+    padding: 12px;
+    text-align: center;
+}
+
+th {
+    background-color: #f1f1f1;
+}
+
+td {
+    background-color: #fff;
+}
+
+/* Responsive Layout */
+@media screen and (max-width: 768px) {
+    .navbar .navbar-nav {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .navbar .navbar-nav .nav-link {
+        text-align: center;
+    }
+
+    .dashboard .card {
+        width: 100%;
+        margin-bottom: 15px;
+    }
+}

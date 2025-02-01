@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+    <div class="admin-dashboard">
+        <h2>Welcome, Admin</h2>
+        <nav>
+            <ul>
+                <li><a href="add-subject.html">Add Subject</a></li>
+                <li><a href="add-chapter.html">Add Chapter</a></li>
+                <li><a href="add-quiz.html">Add Quiz</a></li>
+            </ul>
+        </nav>
+
+        <!-- Search section -->
+        <div class="search-bar">
+            <h3>Search</h3>
+            <form action="search-results.html" method="GET">
+                <input type="text" name="query" placeholder="Search users, subjects, quizzes, and questions" required>
+                <button type="submit">Search</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}
