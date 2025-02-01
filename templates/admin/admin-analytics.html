@@ -1,0 +1,108 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Admin Analytics - Quiz Master{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Admin Analytics</h2>
+
+    <!-- Quiz Performance -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Quiz Performance</h5>
+            <canvas id="quizPerformanceChart"></canvas>
+        </div>
+    </div>
+
+    <!-- User Activity -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">User Activity</h5>
+            <canvas id="userActivityChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Most Attempted Quizzes -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Most Attempted Quizzes</h5>
+            <ul class="list-group" id="mostAttemptedQuizzes">
+                <!-- Data will be populated dynamically -->
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Chart.js for Analytics -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Fetch Quiz Performance Data
+    fetch('/api/quiz-performance')
+        .then(response => response.json())
+        .then(data => {
+            const quizPerformanceCtx = document.getElementById('quizPerformanceChart').getContext('2d');
+            new Chart(quizPerformanceCtx, {
+                type: 'bar',
+                data: {
+                    labels: data.labels, // Quiz names
+                    datasets: [{
+                        label: 'Average Score',
+                        data: data.scores, // Average scores
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100
+                        }
+                    }
+                }
+            });
+        });
+
+    // Fetch User Activity Data
+    fetch('/api/user-activity')
+        .then(response => response.json())
+        .then(data => {
+            const userActivityCtx = document.getElementById('userActivityChart').getContext('2d');
+            new Chart(userActivityCtx, {
+                type: 'line',
+                data: {
+                    labels: data.labels, // Months or dates
+                    datasets: [{
+                        label: 'Active Users',
+                        data: data.activeUsers, // Number of active users
+                        borderColor: 'rgba(153, 102, 255, 1)',
+                        borderWidth: 2,
+                        fill: false
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        });
+
+    // Fetch Most Attempted Quizzes
+    fetch('/api/most-attempted-quizzes')
+        .then(response => response.json())
+        .then(data => {
+            const quizList = document.getElementById('mostAttemptedQuizzes');
+            data.forEach(quiz => {
+                const listItem = document.createElement('li');
+                listItem.className = 'list-group-item';
+                listItem.textContent = `${quiz.name} - ${quiz.attempts} attempts`;
+                quizList.appendChild(listItem);
+            });
+        });
+</script>
+{% endblock %}

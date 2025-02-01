@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block title %}User Registration - Quiz Master{% endblock %}
+{% block content %}
+
+<div class="container mt-5">
+    <h2>User Registeration</h2>
+    <form id="registerForm" onsubmit="valiadateRegistration(event)">
+        <div class="mb-3">
+            <label for="name" class="form-label">Full Name</label>
+            <input type="text" class="form-control" id="name"required>
+        </div>
+        <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" class="form-control" id="email" required>
+
+        </div>
+        <div class="mb-3">
+            <label for="confirmPassword" class="form-label">Confirm Password</label>
+            <input type="password" class="form-control" id="confirmPassword" required>
+
+        </div>
+        <button type="submit" class="btn btn-primary">Register</button>
+    </form>
+    <p class="mt-3"> Already have an account ? <a href="/user-login"></a></p>
+</div>
+
+<script>
+    function valiadateRegistration(event){
+        event.preventDefault();
+        const name = document.getElementById('name').value;
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+
+        if (!name || !email || !password || !confirmPassword) {
+            alert('Please fill in all fields.');
+            return;
+        }
+        if (password !== confirmPassword) {
+            alert('Passwords do not match.');
+            return;
+        }
+        if (password !== confirmPassword) {
+            alert('Passwords do not match.');
+            return;
+        }
+    }
+</script>
+
+{% endblock %}

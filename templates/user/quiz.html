@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %}Quiz - Quiz Master{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Quiz: {{ quiz_name }}</h2>
+    <form id="quizForm" onsubmit="submitQuiz(event)">
+        {% for question in questions %}
+        <div class="mb-3">
+            <p>{{ question.text }}</p>
+            {% for option in question.options %}
+            <input type="radio" name="question_{{ question.id }}" value="{{ option }}" required> {{ option }}<br>
+            {% endfor %}
+        </div>
+        {% endfor %}
+        <button type="submit" class="btn btn-primary">Submit Quiz</button>
+    </form>
+</div>
+
+<script>
+    function submitQuiz(event) {
+        event.preventDefault();
+        alert('Quiz submitted! Redirecting to results...');
+        window.location.href = '/quiz-results'; // Redirect to results page
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block title %}User Dashboard - Quiz Master{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Welcome to Your Dashboard</h2>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Take a Quiz</h5>
+                    <p class="card-text">Choose from available quizzes and test your knowledge.</p>
+                    <a href="/quiz" class="btn btn-primary">Start Quiz</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">View Past Results</h5>
+                    <p class="card-text">Check your performance in previous quizzes.</p>
+                    <a href="/quiz-results" class="btn btn-primary">View Results</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Search Quizzes</h5>
+                    <p class="card-text">Find quizzes by subject or topic.</p>
+                    <input type="text" id="searchQuery" class="form-control mb-2" placeholder="Search quizzes...">
+                    <button onclick="searchQuizzes()" class="btn btn-primary">Search</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function searchQuizzes() {
+        const query = document.getElementById('searchQuery').value;
+        if (!query) {
+            alert('Please enter a search term.');
+            return;
+        }
+        alert(`Searching for quizzes: ${query}`); 
+        
+    }
+</script>
+{% endblock %}
