@@ -1,20 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome to Quiz master</title>
-    <link rel="stylesheet" href="static/csc/style.css">
-    
-</head>
+{% extends 'base.html' %}
+
+
+{% block title %}User Profile - Quiz Master{% endblock %}
+
+{% block content %}
+
 <body>
     <div class="container">
         <header>
             <h1>Welcome to Quiz Master</h1>
             <nav>
                 <ul>
-                    <li><a href="user/dashboard.html">User Dashboard</a></li>
-                    <li><a href="admin/admin-login.html">Admin Dashboard</a></li>
+                    <li><a href="user/login.html" class="nav-link">User Dashboard</a></li>
+                    <li><a href="admin/login.html" class="nav-link">Admin Dashboard</a></li>
                 </ul>
             </nav>
         </header>
@@ -31,3 +29,4 @@
     
 </body>
 </html>
+{% endblock %}

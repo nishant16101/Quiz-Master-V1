@@ -1,22 +1,30 @@
 {% extends 'base.html' %}
 
-{% block title %}Add Subject{% endblock %}
+{% block title %}Add Subject - Admin{% endblock %}
 
 {% block content %}
-    <div class="add-subject">
-        <h2>Add New Subject</h2>
-        <form action="/admin/add-subject" method="POST">
-            <div class="form-group">
-                <label for="subject-name">Subject Name</label>
-                <input type="text" id="subject-name" name="subject_name" class="form-control" required>
-            </div>
+<div class="container mt-5">
+    <h2>Add New Subject</h2>
+    <form action="{{ url_for('manage_subjects') }}" method="POST">
+        <div class="mb-3">
+            <label for="name" class="form-label">Subject Name</label>
+            <input type="text" class="form-control" id="name" name="name" required>
+        </div>
+        <div class="mb-3">
+            <label for="description" class="form-label">Subject Description</label>
+            <textarea class="form-control" id="description" name="description" rows="4" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Add Subject</button>
+    </form>
 
-            <div class="form-group">
-                <label for="subject-description">Subject Description</label>
-                <textarea id="subject-description" name="subject_description" class="form-control" rows="4" required></textarea>
-            </div>
-
-            <button type="submit" class="btn btn-primary">Add Subject</button>
-        </form>
-    </div>
+    <h3 class="mt-5">Existing Subjects</h3>
+    <ul class="list-group">
+        {% for subject in subjects %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            {{ subject.name }}
+            <a href="{{ url_for('delete_subject', subject_id=subject.id) }}" class="btn btn-danger btn-sm">Delete</a>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
 {% endblock %}

@@ -34,6 +34,16 @@ header h1 {
 .navbar .navbar-nav .nav-link:hover {
     background-color: #575757;
 }
+/* Change link color */
+.nav-link {
+    color: #575757; /* Change this to your desired color */
+    text-decoration: none; /* Remove underline */
+}
+
+/* Change link color on hover */
+.nav-link:hover {
+    color: #c70039; /* Change this to your desired hover color */
+}
 
 /* Main Content Area */
 main {

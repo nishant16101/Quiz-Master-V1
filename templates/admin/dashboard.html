@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Welcome, Admin</h2>
+    <nav>
+        <ul class="list-group">
+            <li class="list-group-item"><a href="{{ url_for('manage_subjects') }}">Add Subject</a></li>
+            <li class="list-group-item"><a href="{{ url_for('manage_chapters') }}">Add Chapter</a></li>
+            <li class="list-group-item"><a href="{{ url_for('manage_quizzes') }}">Add Quiz</a></li>
+            
+        </ul>
+    </nav>
+</div>
+{% endblock %}

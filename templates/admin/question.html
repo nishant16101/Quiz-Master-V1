@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% block title %}Manage Questions - {{ quiz_name }}{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Add Questions to Quiz: {{ quiz_name }}</h2>
+
+    <!-- Form to Add New Question -->
+    <form action="{{ url_for('add_question', quiz_id=quiz_id) }}" method="POST">
+        <div class="mb-3">
+            <label for="question-text" class="form-label">Question Text</label>
+            <textarea id="question-text" name="question_text" class="form-control" rows="4" required></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label for="option-1" class="form-label">Option 1</label>
+            <input type="text" id="option-1" name="option_1" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label for="option-2" class="form-label">Option 2</label>
+            <input type="text" id="option-2" name="option_2" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label for="option-3" class="form-label">Option 3</label>
+            <input type="text" id="option-3" name="option_3" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label for="option-4" class="form-label">Option 4</label>
+            <input type="text" id="option-4" name="option_4" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="correct-option" class="form-label">Correct Option</label>
+            <select id="correct-option" name="correct_option" class="form-control" required>
+                <option value="1">Option 1</option>
+                <option value="2">Option 2</option>
+                <option value="3">Option 3</option>
+                <option value="4">Option 4</option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Add Question</button>
+    </form>
+
+    <hr>
+
+    <!-- List of Questions in the Quiz -->
+    <h3>Existing Questions</h3>
+    <div class="existing-questions">
+        {% if questions %}
+            <ul class="list-group">
+                {% for question in questions %}
+                    <li class="list-group-item">
+                        <p><strong>Question:</strong> {{ question.text }}</p>  <!-- Correct reference for question text -->
+                        <ul class="list-unstyled">
+                            <li><strong>Option 1:</strong> {{ question.option_1 }}</li>
+                            <li><strong>Option 2:</strong> {{ question.option_2 }}</li>
+                            <li><strong>Option 3:</strong> {{ question.option_3 }}</li>
+                            <li><strong>Option 4:</strong> {{ question.option_4 }}</li>
+                        </ul>
+                        <p><strong>Correct Option:</strong> Option {{ question.correct_option }}</p>  <!-- Correct reference for correct option -->
+                        <form action="{{ url_for('delete_question', question_id=question.id) }}" method="POST" class="d-inline">
+                            <input type="hidden" name="_method" value="DELETE">
+                            <button type="submit" class="btn btn-danger btn-sm">Delete Question</button>
+                        </form>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="text-muted">No questions added yet.</p>
+        {% endif %}
+    </div>
+
+    <a href="{{ url_for('view_questions', quiz_id=quiz_id) }}" class="btn btn-secondary mt-3">Back to Quizzes</a>
+</div>
+{% endblock %}
