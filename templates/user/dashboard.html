@@ -5,26 +5,63 @@
 {% block content %}
 <div class="container mt-5">
     <h2>Welcome to Your Dashboard</h2>
+    
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
     <div class="row">
-        <div class="col-md-4">
-            <div class="card">
+        <div class="col-md-6">
+            <div class="card mb-4">
                 <div class="card-body">
-                    <h5 class="card-title">Take a Quiz</h5>
-                    <p class="card-text">Choose from available quizzes and test your knowledge.</p>
-                    <a href="/quiz" class="btn btn-primary">Start Quiz</a>
+                    <h5 class="card-title">Available Quizzes</h5>
+                    <ul class="list-group">
+                    {% for quiz in available_quizzes %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            {{ quiz.title }}
+                            <a href="{{ url_for('take_quiz', quiz_id=quiz.id) }}" class="btn btn-primary btn-sm">Take Quiz</a>
+                        </li>
+                    {% endfor %}
+                    </ul>
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="card">
+        <div class="col-md-6">
+            <div class="card mb-4">
                 <div class="card-body">
-                    <h5 class="card-title">View Past Results</h5>
-                    <p class="card-text">Check your performance in previous quizzes.</p>
-                    <a href="/quiz-results" class="btn btn-primary">View Results</a>
+                    <h5 class="card-title">Your Attempted Quizzes</h5>
+                    <ul class="list-group">
+                    {% for attempt in attempted_quizzes %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                {{ attempt.quiz.title }}<br>
+                                <small class="text-muted">
+                                    {{ attempt.date_attempted.strftime('%d %b %Y') }}
+                                </small>
+                            </div>
+                            <div class="text-end">
+                                <span class="badge bg-primary rounded-pill">
+                                    Score: {{ attempt.score }}/{{ attempt.quiz.questions|length }}
+                                </span>
+                                <br>
+                                <small class="text-muted">
+                                    {{ ((attempt.score / attempt.quiz.questions|length) * 100)|round(1) }}%
+                                </small>
+                            </div>
+                        </li>
+                    {% endfor %}
+                    </ul>
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
+    </div>
+    <div class="row">
+        <div class="col-md-12">
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">Search Quizzes</h5>
@@ -45,7 +82,7 @@
             return;
         }
         alert(`Searching for quizzes: ${query}`); 
-        
+        // Implement actual search functionality here
     }
 </script>
 {% endblock %}

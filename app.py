@@ -247,22 +247,22 @@ def user_register():
         flash('Registration successful! Please log in.', 'success')
         return redirect(url_for('user_login'))
     return render_template('user/register.html')
-
-@app.route('/user/dashboard')
+@app.route('/user/dashboard', methods=['GET', 'POST'])
 @login_required
 def user_dashboard():
     available_quizzes = Quiz.query.all()
     attempted_quizzes = QuizAttempt.query.filter_by(user_id=current_user.id).all()
     return render_template('user/dashboard.html', 
-                         available_quizzes=available_quizzes, 
-                         attempted_quizzes=attempted_quizzes)
+                           available_quizzes=available_quizzes, 
+                           attempted_quizzes=attempted_quizzes)
 
 @app.route('/user/quiz/<int:quiz_id>')
 @login_required
 def take_quiz(quiz_id):
     quiz = Quiz.query.get_or_404(quiz_id)
     questions = Question.query.filter_by(quiz_id=quiz_id).all()
-    return render_template('user/quiz_attempt.html', quiz=quiz, questions=questions)
+    return render_template('user/quiz.html', quiz=quiz, questions=questions)
+
 
 @app.route('/user/submit_quiz/<int:quiz_id>', methods=['POST'])
 @login_required
