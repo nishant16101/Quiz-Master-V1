@@ -9,30 +9,30 @@
     <!-- Form to Add New Question -->
     <form action="{{ url_for('add_question', quiz_id=quiz_id) }}" method="POST">
         <div class="mb-3">
-            <label for="question-text" class="form-label">Question Text</label>
-            <textarea id="question-text" name="question_text" class="form-control" rows="4" required></textarea>
+            <label for="question_text" class="form-label">Question Text</label>
+            <textarea id="question_text" name="question_text" class="form-control" rows="4" required></textarea>
         </div>
 
         <div class="mb-3">
-            <label for="option-1" class="form-label">Option 1</label>
-            <input type="text" id="option-1" name="option_1" class="form-control" required>
+            <label for="option_1" class="form-label">Option 1</label>
+            <input type="text" id="option_1" name="option_1" class="form-control" required>
         </div>
         <div class="mb-3">
-            <label for="option-2" class="form-label">Option 2</label>
-            <input type="text" id="option-2" name="option_2" class="form-control" required>
+            <label for="option_2" class="form-label">Option 2</label>
+            <input type="text" id="option_2" name="option_2" class="form-control" required>
         </div>
         <div class="mb-3">
-            <label for="option-3" class="form-label">Option 3</label>
-            <input type="text" id="option-3" name="option_3" class="form-control" required>
+            <label for="option_3" class="form-label">Option 3</label>
+            <input type="text" id="option_3" name="option_3" class="form-control" required>
         </div>
         <div class="mb-3">
-            <label for="option-4" class="form-label">Option 4</label>
-            <input type="text" id="option-4" name="option_4" class="form-control" required>
+            <label for="option_4" class="form-label">Option 4</label>
+            <input type="text" id="option_4" name="option_4" class="form-control" required>
         </div>
 
         <div class="mb-3">
-            <label for="correct-option" class="form-label">Correct Option</label>
-            <select id="correct-option" name="correct_option" class="form-control" required>
+            <label for="correct_option" class="form-label">Correct Option</label>
+            <select id="correct_option" name="correct_option" class="form-control" required>
                 <option value="1">Option 1</option>
                 <option value="2">Option 2</option>
                 <option value="3">Option 3</option>
@@ -52,14 +52,14 @@
             <ul class="list-group">
                 {% for question in questions %}
                     <li class="list-group-item">
-                        <p><strong>Question:</strong> {{ question.text }}</p>  <!-- Correct reference for question text -->
+                        <p><strong>Question:</strong> {{ question.content }}</p>
                         <ul class="list-unstyled">
-                            <li><strong>Option 1:</strong> {{ question.option_1 }}</li>
-                            <li><strong>Option 2:</strong> {{ question.option_2 }}</li>
-                            <li><strong>Option 3:</strong> {{ question.option_3 }}</li>
-                            <li><strong>Option 4:</strong> {{ question.option_4 }}</li>
+                            <li><strong>Option A:</strong> {{ question.option_a }}</li>
+                            <li><strong>Option B:</strong> {{ question.option_b }}</li>
+                            <li><strong>Option C:</strong> {{ question.option_c }}</li>
+                            <li><strong>Option D:</strong> {{ question.option_d }}</li>
                         </ul>
-                        <p><strong>Correct Option:</strong> Option {{ question.correct_option }}</p>  <!-- Correct reference for correct option -->
+                        <p><strong>Correct Answer:</strong> {{ question.correct_answer }}</p>  <!-- Display correct answer text -->
                         <form action="{{ url_for('delete_question', question_id=question.id) }}" method="POST" class="d-inline">
                             <input type="hidden" name="_method" value="DELETE">
                             <button type="submit" class="btn btn-danger btn-sm">Delete Question</button>
@@ -72,6 +72,6 @@
         {% endif %}
     </div>
 
-    <a href="{{ url_for('view_questions', quiz_id=quiz_id) }}" class="btn btn-secondary mt-3">Back to Quizzes</a>
+    <a href="{{ url_for('manage_quizzes') }}" class="btn btn-secondary mt-3">Back to Quizzes</a>
 </div>
 {% endblock %}

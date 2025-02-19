@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
+from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, current_user, logout_user
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -54,10 +54,9 @@ class Question(db.Model):
     option_a = db.Column(db.String(200), nullable=False)
     option_b = db.Column(db.String(200), nullable=False)
     option_c = db.Column(db.String(200), nullable=False)
-    option_d = db.Column(db.String(200), nullable=False)
-    correct_answer = db.Column(db.String(1), nullable=False)
+    option_d = db.Column(db.String(200), nullable =False)
+    correct_answer = db.Column(db.String(200), nullable=False)
     quiz_id = db.Column(db.Integer, db.ForeignKey('quiz.id'), nullable=False)
-    
 
 class QuizAttempt(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -96,7 +95,31 @@ def admin_dashboard():
     if not current_user.is_admin:
         flash('You do not have permission to access this page.', 'danger')
         return redirect(url_for('user/dashboard'))
-    return render_template('admin/dashboard.html')
+
+    search_query = request.args.get('search_query')
+    users = []
+
+    if search_query:
+        users = User.query.filter(User.username.contains(search_query)).all()
+
+    return render_template('admin/dashboard.html', users=users, search_query=search_query)
+
+@app.route('/admin/user/delete/<int:user_id>')
+@login_required
+def delete_user(user_id):
+    if not current_user.is_admin:
+        flash('You do not have permission to access this page.', 'danger')
+        return redirect(url_for('user/dashboard'))
+
+    user = User.query.get_or_404(user_id)
+     # Prevent admin from deleting themselves
+    if user.id == current_user.id:
+        flash('You cannot delete yourself.', 'danger')
+        return redirect(url_for('admin_dashboard'))
+    db.session.delete(user)
+    db.session.commit()
+    flash('User deleted successfully!', 'success')
+    return redirect(url_for('admin_dashboard'))
 
 @app.route('/admin/subjects', methods=['GET', 'POST'])
 @login_required
@@ -151,10 +174,32 @@ def manage_quizzes():
         chapter_id = request.form.get('chapter_id')
         title = request.form.get('title')
         duration = request.form.get('duration')
+
+        if not chapter_id or not title or not duration:
+            flash('All fields are required.', 'danger')
+            return redirect(url_for('manage_quizzes'))
+
+        try:
+            duration = int(duration)  # Convert to integer
+            if duration <= 0:
+                flash('Duration must be a positive number.', 'danger')
+                return redirect(url_for('manage_quizzes'))
+        except ValueError:
+            flash('Invalid duration. Please enter a number.', 'danger')
+            return redirect(url_for('manage_quizzes'))
+
+        # Prevent duplicate quiz titles within the same chapter (optional)
+        existing_quiz = Quiz.query.filter_by(title=title, chapter_id=chapter_id).first()
+        if existing_quiz:
+            flash('A quiz with this title already exists in the selected chapter.', 'warning')
+            return redirect(url_for('manage_quizzes'))
+
+        # Save quiz
         quiz = Quiz(title=title, duration=duration, chapter_id=chapter_id)
         db.session.add(quiz)
         db.session.commit()
         flash('Quiz added successfully!', 'success')
+
     quizzes = Quiz.query.all()
     chapters = Chapter.query.all()
     return render_template('admin/add-quiz.html', quizzes=quizzes, chapters=chapters)
@@ -174,49 +219,55 @@ def view_questions(quiz_id):
     questions = Question.query.filter_by(quiz_id=quiz_id).all()
     return render_template('admin/question.html', quiz_name=quiz.title, quiz_id=quiz.id, questions=questions)
 
-
-
-
 @app.route('/admin/questions/<int:quiz_id>/add', methods=['POST'])
 @login_required
 def add_question(quiz_id):
-    content = request.form.get('question_text')  # Ensure correct field names from the form
+    content = request.form.get('question_text')
     option_a = request.form.get('option_1')
     option_b = request.form.get('option_2')
     option_c = request.form.get('option_3')
     option_d = request.form.get('option_4')
-    correct_answer = request.form.get('correct_option')
-    
-    if not all([content, option_a, option_b, option_c, option_d, correct_answer]):
+    correct_option = request.form.get('correct_option')
+
+    correct_answer = ""
+
+    if correct_option == '1':
+        correct_answer = 'A'
+    elif correct_option == '2':
+        correct_answer = 'B'
+    elif correct_option == '3':
+        correct_answer = 'C'
+    elif correct_option == '4':
+        correct_answer = 'D'
+    if not all([content, option_a, option_b, option_c, option_d, correct_option]):
         flash('All fields are required!', 'danger')
         return redirect(url_for('view_questions', quiz_id=quiz_id))
-    
+
     new_question = Question(
-        content=content, 
-        option_a=option_a, 
-        option_b=option_b, 
-        option_c=option_c, 
-        option_d=option_d, 
-        correct_answer=correct_answer, 
+        content=content,
+        option_a=option_a,
+        option_b=option_b,
+        option_c=option_c,
+        option_d=option_d,
+        correct_answer=correct_answer,
         quiz_id=quiz_id
     )
-    
     db.session.add(new_question)
     db.session.commit()
     flash('Question added successfully!', 'success')
     return redirect(url_for('view_questions', quiz_id=quiz_id))
 
 
+
 @app.route('/delete_question/<int:question_id>', methods=['POST'])
 @login_required
 def delete_question(question_id):
     question = Question.query.get_or_404(question_id)
-    quiz_id = question.quiz_id  
+    quiz_id = question.quiz_id
     db.session.delete(question)
     db.session.commit()
     flash('Question deleted successfully!', 'success')
     return redirect(url_for('view_questions', quiz_id=quiz_id))
-
 
 # User Routes
 @app.route('/user/login.html', methods=['GET', 'POST'])
@@ -247,13 +298,14 @@ def user_register():
         flash('Registration successful! Please log in.', 'success')
         return redirect(url_for('user_login'))
     return render_template('user/register.html')
+
 @app.route('/user/dashboard', methods=['GET', 'POST'])
 @login_required
 def user_dashboard():
     available_quizzes = Quiz.query.all()
     attempted_quizzes = QuizAttempt.query.filter_by(user_id=current_user.id).all()
-    return render_template('user/dashboard.html', 
-                           available_quizzes=available_quizzes, 
+    return render_template('user/dashboard.html',
+                           available_quizzes=available_quizzes,
                            attempted_quizzes=attempted_quizzes)
 
 @app.route('/user/quiz/<int:quiz_id>')
@@ -263,25 +315,33 @@ def take_quiz(quiz_id):
     questions = Question.query.filter_by(quiz_id=quiz_id).all()
     return render_template('user/quiz.html', quiz=quiz, questions=questions)
 
-
-@app.route('/user/submit_quiz/<int:quiz_id>', methods=['POST'])
+@app.route('/quiz/<int:quiz_id>/submit', methods=['POST'])
 @login_required
 def submit_quiz(quiz_id):
     quiz = Quiz.query.get_or_404(quiz_id)
     questions = Question.query.filter_by(quiz_id=quiz_id).all()
+    user_answers = request.form
+
     score = 0
     for question in questions:
-        answer = request.form.get(f'q{question.id}')
-        if answer == question.correct_answer:
+        string = 'q'+str(question.id)
+        user_answer = user_answers.get(string) # This is the user's answer (a string)
+        if user_answer == question.correct_answer: # Compare to the question's correct answer
             score += 1
-    
-    attempt = QuizAttempt(user_id=current_user.id, 
-                         quiz_id=quiz_id, 
-                         score=score)
-    db.session.add(attempt)
+    attempt = QuizAttempt.query.filter_by(user_id=current_user.id, quiz_id=quiz_id).first()
+
+    if attempt:
+        attempt.score = score
+        attempt.date_attempted = datetime.now()
+    else:
+        attempt = QuizAttempt(user_id=current_user.id, quiz_id=quiz_id, score=score)
+        db.session.add(attempt)
+
     db.session.commit()
-    flash('Quiz submitted successfully!', 'success')
+    flash(f'Quiz submitted successfully! Your score: {score}/{len(questions)}', 'success')
     return redirect(url_for('user_dashboard'))
+
+
 
 @app.route('/user/profile', methods=['GET', 'POST'])
 @login_required
@@ -290,7 +350,7 @@ def user_profile():
         username = request.form.get('username')
         password = request.form.get('password')
         confirm_password = request.form.get('confirm_password')
-        
+
         if password and password == confirm_password:
             current_user.set_password(password)
         current_user.username = username

@@ -9,10 +9,10 @@
             <div class="card-body">
                 <h5 class="card-title">Question {{ loop.index }}</h5>
                 <p class="card-text">{{ question.content }}</p>
-                
+
                 <div class="form-check">
                     <input class="form-check-input" type="radio" 
-                           name="q{{ question.id }}" id="q{{ question.id }}_a" value="A">
+                           name="q{{ question.id }}" id="q{{ question.id }}_a" value="A" required>
                     <label class="form-check-label" for="q{{ question.id }}_a">
                         {{ question.option_a }}
                     </label>

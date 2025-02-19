@@ -5,69 +5,90 @@
 {% block content %}
 <div class="container mt-5">
     <h2>Welcome to Your Dashboard</h2>
-    
+
     <!-- Flash messages -->
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
             {% for category, message in messages %}
-            <div class="alert alert-{{ category }}">{{ message }}</div>
+                <div class="alert alert-{{ category }} alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
             {% endfor %}
         {% endif %}
     {% endwith %}
 
     <div class="row">
+        <!-- Available Quizzes Section -->
         <div class="col-md-6">
             <div class="card mb-4">
                 <div class="card-body">
                     <h5 class="card-title">Available Quizzes</h5>
-                    <ul class="list-group">
-                    {% for quiz in available_quizzes %}
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            {{ quiz.title }}
-                            <a href="{{ url_for('take_quiz', quiz_id=quiz.id) }}" class="btn btn-primary btn-sm">Take Quiz</a>
-                        </li>
-                    {% endfor %}
-                    </ul>
+                    {% if available_quizzes %}
+                        <ul class="list-group">
+                        {% for quiz in available_quizzes %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                {{ quiz.title }}
+                                <a href="{{ url_for('take_quiz', quiz_id=quiz.id) }}" class="btn btn-primary btn-sm">Take Quiz</a>
+                            </li>
+                        {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p class="text-muted">No available quizzes at the moment.</p>
+                    {% endif %}
                 </div>
             </div>
         </div>
+
+        <!-- Attempted Quizzes Section -->
         <div class="col-md-6">
             <div class="card mb-4">
                 <div class="card-body">
                     <h5 class="card-title">Your Attempted Quizzes</h5>
-                    <ul class="list-group">
-                    {% for attempt in attempted_quizzes %}
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <div>
-                                {{ attempt.quiz.title }}<br>
-                                <small class="text-muted">
-                                    {{ attempt.date_attempted.strftime('%d %b %Y') }}
-                                </small>
-                            </div>
-                            <div class="text-end">
-                                <span class="badge bg-primary rounded-pill">
-                                    Score: {{ attempt.score }}/{{ attempt.quiz.questions|length }}
-                                </span>
-                                <br>
-                                <small class="text-muted">
-                                    {{ ((attempt.score / attempt.quiz.questions|length) * 100)|round(1) }}%
-                                </small>
-                            </div>
-                        </li>
-                    {% endfor %}
-                    </ul>
+                    {% if attempted_quizzes %}
+                        <ul class="list-group">
+                        {% for attempt in attempted_quizzes %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    {{ attempt.quiz.title }}<br>
+                                    <small class="text-muted">
+                                        {% if attempt.date_attempted %}
+                                            {{ attempt.date_attempted.strftime('%d %b %Y') }}
+                                        {% else %}
+                                            Unknown Date
+                                        {% endif %}
+                                    </small>
+                                </div>
+                                <div class="text-end">
+                                    {% set total_questions = attempt.quiz.questions|length %}
+                                    {% set percentage = (attempt.score / total_questions) * 100 if total_questions > 0 else 0 %}
+                                    <span class="badge bg-primary rounded-pill">
+                                        Score: {{ attempt.score }}/{{ total_questions }}
+                                    </span>
+                                    <br>
+                                    <small class="text-muted">
+                                        {{ percentage|round(1) }}%
+                                    </small>
+                                </div>
+                            </li>
+                        {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p class="text-muted">You haven't attempted any quizzes yet.</p>
+                    {% endif %}
                 </div>
             </div>
         </div>
-    </div>
+        
+
+    <!-- Search Quizzes Section -->
     <div class="row">
         <div class="col-md-12">
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">Search Quizzes</h5>
                     <p class="card-text">Find quizzes by subject or topic.</p>
-                    <input type="text" id="searchQuery" class="form-control mb-2" placeholder="Search quizzes...">
-                    <button onclick="searchQuizzes()" class="btn btn-primary">Search</button>
+                    <input type="text" id="searchQuery" class="form-control mb-2" placeholder="Search quizzes..." oninput="filterQuizzes()">
                 </div>
             </div>
         </div>
@@ -75,14 +96,19 @@
 </div>
 
 <script>
-    function searchQuizzes() {
-        const query = document.getElementById('searchQuery').value;
-        if (!query) {
-            alert('Please enter a search term.');
-            return;
-        }
-        alert(`Searching for quizzes: ${query}`); 
-        // Implement actual search functionality here
+    function filterQuizzes() {
+        let query = document.getElementById('searchQuery').value.toLowerCase();
+        let quizzes = document.querySelectorAll('.list-group-item');
+
+        quizzes.forEach(quiz => {
+            let title = quiz.innerText.toLowerCase();
+            if (title.includes(query)) {
+                quiz.style.display = 'flex';
+            } else {
+                quiz.style.display = 'none';
+            }
+        });
     }
 </script>
+
 {% endblock %}
